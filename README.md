@@ -252,7 +252,7 @@ Dependencias principales utilizadas:
 Clona el repositorio:
 
 ```bash
-git clone <REPOSITORY_URL>
+git clone https://github.com/isairey/shieldphp.git
 ```
 
 Entra al núcleo PHP:
