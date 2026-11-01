@@ -513,7 +513,7 @@ Consulta el archivo `LICENSE` para conocer los términos completos de uso y dist
 
 ## 👨‍💻 Autor
 
-**ShieldPHP Development**
+**Isai Reyes - ShieldPHP Development**
 
 Proyecto independiente enfocado en el desarrollo de herramientas de autenticación, autorización y seguridad para el ecosistema PHP.
 
