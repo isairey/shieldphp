@@ -1,0 +1,69 @@
+
+{
+    "name": "shieldphp/monorepo",
+    "description": "Monorepositorio de ShieldPHP: biblioteca PHP de autenticación, autorización y seguridad.",
+    "type": "project",
+    "keywords": [
+        "php",
+        "security",
+        "authentication",
+        "authorization",
+        "oauth2",
+        "jwt",
+        "encryption",
+        "shieldphp"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "ext-json": "*",
+        "ext-sodium": "*",
+        "firebase/php-jwt": "^7.2.1",
+        "psr/http-client": "^1.0",
+        "psr/http-factory": "^1.1",
+        "psr/http-message": "^2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5",
+        "phpstan/phpstan": "^2.1",
+        "friendsofphp/php-cs-fixer": "^3.80"
+    },
+    "autoload": {
+        "psr-4": {
+            "ShieldPHP\\Core\\": "packages/php-core/src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ShieldPHP\\Core\\Tests\\": "packages/php-core/tests/"
+        }
+    },
+    "scripts": {
+        "test": [
+            "@php vendor/bin/phpunit -c packages/php-core/phpunit.xml"
+        ],
+        "analyse": [
+            "@php vendor/bin/phpstan analyse packages/php-core/src --level=8 --no-progress"
+        ],
+        "format": [
+            "@php vendor/bin/php-cs-fixer fix packages/php-core/src"
+        ],
+        "format:check": [
+            "@php vendor/bin/php-cs-fixer fix packages/php-core/src --dry-run --diff"
+        ],
+        "check": [
+            "@composer validate --strict",
+            "@composer test",
+            "@composer analyse",
+            "@composer format:check"
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {}
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
