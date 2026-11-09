@@ -1,0 +1,185 @@
+
+# ==========================================================
+# ShieldPHP - Git Ignore
+# ==========================================================
+
+# ----------------------------------------------------------
+# ENVIRONMENT VARIABLES AND SECRETS
+# ----------------------------------------------------------
+
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Private keys and certificates
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+*.jks
+
+# Secret files
+secrets/
+private/
+credentials/
+
+# ----------------------------------------------------------
+# COMPOSER / PHP DEPENDENCIES
+# ----------------------------------------------------------
+
+vendor/
+composer.phar
+
+# Composer cache
+composer-cache/
+.composer/
+
+# ----------------------------------------------------------
+# PHP TESTING
+# ----------------------------------------------------------
+
+.phpunit.cache/
+.phpunit.result.cache
+.phpunit-watcher.yml
+
+# Coverage reports
+coverage/
+build/coverage/
+reports/coverage/
+clover.xml
+coverage.xml
+phpunit-report.xml
+
+# Test artifacts
+tests/_output/
+tests/_support/_generated/
+
+# ----------------------------------------------------------
+# PHP CODE QUALITY TOOLS
+# ----------------------------------------------------------
+
+.php-cs-fixer.cache
+.php-cs-fixer.php
+.phpstan/
+phpstan.neon.local
+.phpmd.xml
+.psalm/
+.psalm-cache/
+infection.log
+infection-summary.log
+rector.php.local
+
+# ----------------------------------------------------------
+# LOGS AND TEMPORARY FILES
+# ----------------------------------------------------------
+
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*.orig
+*.old
+*.cache
+
+logs/
+tmp/
+temp/
+cache/
+
+# ----------------------------------------------------------
+# RUNTIME AND GENERATED DATA
+# ----------------------------------------------------------
+
+runtime/
+storage/logs/
+storage/framework/cache/
+storage/framework/sessions/
+storage/framework/views/
+
+# Local databases
+*.sqlite
+*.sqlite3
+*.db
+
+# ----------------------------------------------------------
+# BUILD AND DISTRIBUTION
+# ----------------------------------------------------------
+
+/build/
+/dist/
+/out/
+/target/
+
+# ----------------------------------------------------------
+# NODE.JS (DOCUMENTATION / FRONTEND TOOLS)
+# ----------------------------------------------------------
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+.npm/
+.yarn/
+.pnpm-store/
+
+# ----------------------------------------------------------
+# IDEs AND EDITORS
+# ----------------------------------------------------------
+
+.idea/
+.vscode/
+*.code-workspace
+*.sublime-project
+*.sublime-workspace
+
+# ----------------------------------------------------------
+# OPERATING SYSTEM FILES
+# ----------------------------------------------------------
+
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ----------------------------------------------------------
+# DOCKER AND LOCAL DEVELOPMENT
+# ----------------------------------------------------------
+
+.docker/
+docker-data/
+docker-volumes/
+
+# ----------------------------------------------------------
+# ENVIRONMENT-SPECIFIC CONFIGURATION
+# ----------------------------------------------------------
+
+php.ini
+phpunit.local.xml
+phpunit.xml.local
+config.local.php
+
+# ----------------------------------------------------------
+# EDITOR BACKUPS
+# ----------------------------------------------------------
+
+*~
+\#*\#
+.#*
+
+# ----------------------------------------------------------
+# GENERATED DOCUMENTATION
+# ----------------------------------------------------------
+
+/docs/_site/
+/site/
+/.phpdoc/
+phpDocumentor.cache
