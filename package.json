@@ -1,0 +1,72 @@
+
+{
+    "name": "shieldphp/core",
+    "description": "Núcleo de ShieldPHP: autenticación, autorización, JWT, OAuth 2.0 y herramientas criptográficas para PHP.",
+    "type": "library",
+    "keywords": [
+        "shieldphp",
+        "php",
+        "security",
+        "authentication",
+        "authorization",
+        "jwt",
+        "oauth",
+        "oauth2",
+        "cryptography",
+        "encryption",
+        "password"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "ext-json": "*",
+        "ext-sodium": "*",
+        "firebase/php-jwt": "^7.2.1",
+        "psr/http-client": "^1.0",
+        "psr/http-factory": "^1.1",
+        "psr/http-message": "^2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5",
+        "phpstan/phpstan": "^2.1",
+        "friendsofphp/php-cs-fixer": "^3.80"
+    },
+    "autoload": {
+        "psr-4": {
+            "ShieldPHP\\Core\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ShieldPHP\\Core\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": [
+            "@php vendor/bin/phpunit -c phpunit.xml"
+        ],
+        "analyse": [
+            "@php vendor/bin/phpstan analyse src --level=8 --no-progress"
+        ],
+        "format": [
+            "@php vendor/bin/php-cs-fixer fix src tests"
+        ],
+        "format:check": [
+            "@php vendor/bin/php-cs-fixer fix src tests --dry-run --diff"
+        ],
+        "check": [
+            "@composer validate --strict",
+            "@composer test",
+            "@composer analyse",
+            "@composer format:check"
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {}
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
