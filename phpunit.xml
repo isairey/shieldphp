@@ -1,0 +1,91 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd"
+    bootstrap="vendor/autoload.php"
+    cacheDirectory=".phpunit.cache"
+    colors="true"
+    executionOrder="default"
+    failOnDeprecation="true"
+    failOnRisky="true"
+    failOnWarning="true"
+    beStrictAboutOutputDuringTests="true"
+    backupGlobals="true"
+    backupStaticProperties="true"
+>
+
+    <!-- ================================================== -->
+    <!-- TEST SUITES                                        -->
+    <!-- ================================================== -->
+
+    <testsuites>
+
+        <!-- Todas las pruebas de ShieldPHP -->
+        <testsuite name="ShieldPHP - All Tests">
+
+            <directory suffix="Test.php">
+                packages/php-core/tests/Unit
+            </directory>
+
+            <directory suffix="Test.php">
+                packages/php-core/tests/Integration
+            </directory>
+
+            <directory suffix="Test.php">
+                packages/php-core/tests/Security
+            </directory>
+
+        </testsuite>
+
+        <!-- Pruebas unitarias -->
+        <testsuite name="ShieldPHP - Unit Tests">
+            <directory suffix="Test.php">
+                packages/php-core/tests/Unit
+            </directory>
+        </testsuite>
+
+        <!-- Pruebas de integración -->
+        <testsuite name="ShieldPHP - Integration Tests">
+            <directory suffix="Test.php">
+                packages/php-core/tests/Integration
+            </directory>
+        </testsuite>
+
+        <!-- Pruebas de seguridad -->
+        <testsuite name="ShieldPHP - Security Tests">
+            <directory suffix="Test.php">
+                packages/php-core/tests/Security
+            </directory>
+        </testsuite>
+
+    </testsuites>
+
+    <!-- ================================================== -->
+    <!-- SOURCE CODE                                        -->
+    <!-- ================================================== -->
+
+    <source>
+        <include>
+            <directory suffix=".php">
+                packages/php-core/src
+            </directory>
+        </include>
+    </source>
+
+    <!-- ================================================== -->
+    <!-- ENVIRONMENT                                        -->
+    <!-- ================================================== -->
+
+    <php>
+        <ini name="date.timezone" value="UTC"/>
+        <ini name="display_errors" value="1"/>
+        <ini name="error_reporting" value="-1"/>
+
+        <env name="APP_ENV" value="testing"/>
+        <env name="SHIELDPHP_ENV" value="testing"/>
+        <env name="SHIELDPHP_TESTING" value="true"/>
+    </php>
+
+</phpunit>
