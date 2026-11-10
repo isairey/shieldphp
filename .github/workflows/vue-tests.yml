@@ -1,0 +1,259 @@
+
+# ==========================================================
+# ShieldPHP - Vue Tests
+# GitHub Actions Workflow
+# ==========================================================
+
+name: ShieldPHP Vue Tests
+
+# ----------------------------------------------------------
+# WORKFLOW TRIGGERS
+# ----------------------------------------------------------
+
+on:
+  push:
+    branches:
+      - main
+      - Dev
+
+  pull_request:
+    branches:
+      - main
+      - Dev
+
+  workflow_dispatch:
+
+# ----------------------------------------------------------
+# PERMISSIONS
+# ----------------------------------------------------------
+
+permissions:
+  contents: read
+
+# ----------------------------------------------------------
+# CONCURRENCY
+# ----------------------------------------------------------
+
+concurrency:
+  group: vue-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+# ----------------------------------------------------------
+# JOBS
+# ----------------------------------------------------------
+
+jobs:
+
+  # ========================================================
+  # DISCOVER VUE PROJECTS
+  # ========================================================
+
+  discover:
+
+    name: Discover Vue projects
+
+    runs-on: ubuntu-latest
+
+    outputs:
+      has_vue: ${{ steps.find-projects.outputs.has_vue }}
+      directories: ${{ steps.find-projects.outputs.directories }}
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Find Vue projects
+        id: find-projects
+        shell: bash
+        run: |
+          PROJECTS="$(node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const { execFileSync } = require('node:child_process');
+
+          const files = execFileSync(
+              'git',
+              ['ls-files', '-z'],
+              { encoding: 'utf8' }
+          )
+              .split('\0')
+              .filter(file => /(^|\/)package\.json$/.test(file));
+
+          const directories = [];
+
+          for (const file of files) {
+              try {
+                  const pkg = JSON.parse(fs.readFileSync(file, 'utf8'));
+
+                  const dependencies = {
+                      ...pkg.dependencies,
+                      ...pkg.devDependencies,
+                      ...pkg.peerDependencies,
+                      ...pkg.optionalDependencies
+                  };
+
+                  if (Object.hasOwn(dependencies, 'vue')) {
+                      directories.push(path.posix.dirname(file));
+                  }
+              } catch (error) {
+                  console.warn(`No se pudo leer ${file}: ${error.message}`);
+              }
+          }
+
+          console.log(JSON.stringify([...new Set(directories)].sort()));
+          NODE
+          )"
+
+          echo "directories=$PROJECTS" >> "$GITHUB_OUTPUT"
+
+          if [ "$PROJECTS" = "[]" ]; then
+            echo "has_vue=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::No se encontraron proyectos Vue en el repositorio."
+          else
+            echo "has_vue=true" >> "$GITHUB_OUTPUT"
+            echo "Proyectos Vue detectados: $PROJECTS"
+          fi
+
+  # ========================================================
+  # VUE TESTS
+  # ========================================================
+
+  vue-tests:
+
+    name: Vue Tests - Node ${{ matrix.node-version }} - ${{ matrix.project-directory }}
+
+    needs:
+      - discover
+
+    if: needs.discover.outputs.has_vue == 'true'
+
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 20
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        node-version:
+          - '22.x'
+          - '24.x'
+
+        project-directory: ${{ fromJSON(needs.discover.outputs.directories) }}
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.project-directory }}
+
+    env:
+      CI: true
+      NODE_ENV: test
+
+    steps:
+
+      # ----------------------------------------------------
+      # CHECKOUT
+      # ----------------------------------------------------
+
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      # ----------------------------------------------------
+      # NODE.JS
+      # ----------------------------------------------------
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Display Node.js and npm versions
+        run: |
+          node --version
+          npm --version
+
+      # ----------------------------------------------------
+      # VALIDATE PROJECT
+      # ----------------------------------------------------
+
+      - name: Validate Vue project
+        run: |
+          if [ ! -f package.json ]; then
+            echo "::error::No se encontró package.json."
+            exit 1
+          fi
+
+          if [ ! -f package-lock.json ] && [ ! -f npm-shrinkwrap.json ]; then
+            echo "::error::Se requiere package-lock.json o npm-shrinkwrap.json."
+            exit 1
+          fi
+
+      # ----------------------------------------------------
+      # INSTALL DEPENDENCIES
+      # ----------------------------------------------------
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      # ----------------------------------------------------
+      # VERIFY VUE
+      # ----------------------------------------------------
+
+      - name: Verify Vue installation
+        run: npm ls vue
+
+      # ----------------------------------------------------
+      # RUN TESTS
+      # ----------------------------------------------------
+
+      - name: Run Vue tests
+        shell: bash
+        run: |
+          TEST_SCRIPT="$(node -e "
+            const pkg = require('./package.json');
+            const scripts = pkg.scripts || {};
+
+            const name =
+              scripts['test:ci'] ? 'test:ci' :
+              scripts['test:unit'] ? 'test:unit' :
+              scripts.test ? 'test' :
+              '';
+
+            process.stdout.write(name);
+          ")"
+
+          if [ -z "$TEST_SCRIPT" ]; then
+            echo "::error::No existe un script test:ci, test:unit o test en package.json."
+            exit 1
+          fi
+
+          echo "Ejecutando: npm run $TEST_SCRIPT"
+
+          npm run "$TEST_SCRIPT"
+
+      # ----------------------------------------------------
+      # TYPE CHECK
+      # ----------------------------------------------------
+
+      - name: Run type checking
+        run: npm run type-check --if-present
+
+      # ----------------------------------------------------
+      # BUILD
+      # ----------------------------------------------------
+
+      - name: Build Vue application
+        run: npm run build --if-present
+
+      # ----------------------------------------------------
+      # RESULT
+      # ----------------------------------------------------
+
+      - name: Report successful execution
+        if: success()
+        run: echo "Vue tests completed successfully on Node.js ${{ matrix.node-version }}."
+
+      - name: Report failed execution
+        if: failure()
+        run: echo "Vue tests failed on Node.js ${{ matrix.node-version }}."
