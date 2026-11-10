@@ -1,0 +1,133 @@
+
+# ==========================================================
+# ShieldPHP - PHP Tests
+# GitHub Actions CI Workflow
+# ==========================================================
+
+name: ShieldPHP PHP Tests
+
+# ----------------------------------------------------------
+# WORKFLOW TRIGGERS
+# ----------------------------------------------------------
+
+on:
+  push:
+    branches:
+      - main
+      - Dev
+
+  pull_request:
+    branches:
+      - main
+      - Dev
+
+  workflow_dispatch:
+
+# ----------------------------------------------------------
+# PERMISSIONS
+# ----------------------------------------------------------
+
+permissions:
+  contents: read
+
+# ----------------------------------------------------------
+# CONCURRENCY
+# ----------------------------------------------------------
+
+concurrency:
+  group: php-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+# ----------------------------------------------------------
+# JOBS
+# ----------------------------------------------------------
+
+jobs:
+
+  # ========================================================
+  # PHPUNIT TESTS
+  # ========================================================
+
+  phpunit:
+
+    name: PHP ${{ matrix.php-version }} - PHPUnit
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        php-version:
+          - '8.2'
+          - '8.3'
+          - '8.4'
+
+    # ------------------------------------------------------
+    # ENVIRONMENT VARIABLES
+    # ------------------------------------------------------
+
+    env:
+      APP_ENV: testing
+      SHIELDPHP_ENV: testing
+      SHIELDPHP_TESTING: true
+
+    # ------------------------------------------------------
+    # STEPS
+    # ------------------------------------------------------
+
+    steps:
+
+      # Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      # Install PHP
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: sodium, mbstring, dom, xml, xmlwriter
+          tools: composer:v2
+          coverage: none
+
+      # Display environment versions
+      - name: Display PHP and Composer versions
+        run: |
+          php --version
+          composer --version
+          php -m
+
+      # Validate Composer configuration
+      - name: Validate Composer
+        run: composer validate --strict
+
+      # Install project dependencies
+      - name: Install dependencies
+        run: |
+          composer install \
+            --prefer-dist \
+            --no-interaction \
+            --no-progress \
+            --optimize-autoloader
+
+      # Verify Composer autoload
+      - name: Verify Composer autoload
+        run: composer dump-autoload --optimize
+
+      # Execute PHPUnit
+      - name: Run PHPUnit tests
+        run: |
+          vendor/bin/phpunit \
+            --configuration phpunit.xml \
+            --no-coverage
+
+      # Display success message
+      - name: Tests completed
+        if: success()
+        run: echo "ShieldPHP tests passed on PHP ${{ matrix.php-version }}."
+
+      # Display failure message
+      - name: Tests failed
+        if: failure()
+        run: echo "ShieldPHP tests failed on PHP ${{ matrix.php-version }}."
