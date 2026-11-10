@@ -1,0 +1,126 @@
+
+# ==========================================================
+# ShieldPHP - Static Analysis
+# GitHub Actions Workflow
+# ==========================================================
+
+name: ShieldPHP Static Analysis
+
+# ----------------------------------------------------------
+# WORKFLOW TRIGGERS
+# ----------------------------------------------------------
+
+on:
+  push:
+    branches:
+      - main
+      - Dev
+
+  pull_request:
+    branches:
+      - main
+      - Dev
+
+  workflow_dispatch:
+
+# ----------------------------------------------------------
+# PERMISSIONS
+# ----------------------------------------------------------
+
+permissions:
+  contents: read
+
+# ----------------------------------------------------------
+# CONCURRENCY
+# ----------------------------------------------------------
+
+concurrency:
+  group: static-analysis-${{ github.ref }}
+  cancel-in-progress: true
+
+# ----------------------------------------------------------
+# JOBS
+# ----------------------------------------------------------
+
+jobs:
+
+  # ========================================================
+  # PHPSTAN ANALYSIS
+  # ========================================================
+
+  phpstan:
+
+    name: PHPStan - PHP 8.2
+
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 10
+
+    # ------------------------------------------------------
+    # ENVIRONMENT VARIABLES
+    # ------------------------------------------------------
+
+    env:
+      APP_ENV: testing
+      SHIELDPHP_ENV: testing
+      SHIELDPHP_TESTING: true
+
+    # ------------------------------------------------------
+    # STEPS
+    # ------------------------------------------------------
+
+    steps:
+
+      # Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      # Install PHP
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: sodium, mbstring
+          tools: composer:v2
+          coverage: none
+
+      # Display environment versions
+      - name: Display PHP and Composer versions
+        run: |
+          php --version
+          composer --version
+
+      # Validate Composer
+      - name: Validate Composer configuration
+        run: composer validate --strict
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          composer install \
+            --prefer-dist \
+            --no-interaction \
+            --no-progress \
+            --optimize-autoloader
+
+      # Verify PHPStan installation
+      - name: Verify PHPStan
+        run: vendor/bin/phpstan --version
+
+      # Run static analysis
+      - name: Run PHPStan
+        run: |
+          vendor/bin/phpstan analyse \
+            --configuration=packages/php-core/phpstan.neon \
+            --no-progress \
+            --error-format=github
+
+      # Report success
+      - name: Analysis completed
+        if: success()
+        run: echo "ShieldPHP static analysis completed successfully."
+
+      # Report failure
+      - name: Analysis failed
+        if: failure()
+        run: echo "ShieldPHP static analysis detected errors."
