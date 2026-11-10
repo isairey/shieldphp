@@ -1,524 +1,628 @@
-# 🛡️ ShieldPHP
+# ShieldPHP
 
 <p align="center">
-  <img src="https://img.shields.io/badge/SHIELDPHP-PHP%20SECURITY%20TOOLKIT-2563EB?style=for-the-badge&logo=php&logoColor=white" width="220" alt="ShieldPHP">
+  <img src="docs/assets/shieldphp-logo.png" width="220" alt="ShieldPHP Logo">
 </p>
 
 <p align="center">
-  **Framework de autenticación, autorización y seguridad para aplicaciones PHP.**
+  <strong>Framework modular de autenticación, autorización y seguridad para PHP.</strong>
+</p>
+
+<p align="center">
+  Construye aplicaciones PHP más seguras mediante componentes reutilizables, criptografía moderna y mecanismos de protección diseñados para integrarse en diferentes arquitecturas.
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP 8.2+">
-  <img src="https://img.shields.io/badge/Version-0.1.0-blue?style=for-the-badge" alt="Version 0.1.0">
-  <img src="https://img.shields.io/badge/Architecture-Modular-success?style=for-the-badge" alt="Modular Architecture">
-  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License">
+  <img src="https://img.shields.io/badge/Composer-2%2B-885630?style=for-the-badge&logo=composer&logoColor=white" alt="Composer">
+  <img src="https://img.shields.io/badge/PHPUnit-11.5-366488?style=for-the-badge&logo=php&logoColor=white" alt="PHPUnit 11.5">
+  <img src="https://img.shields.io/badge/Status-In%20Development-orange?style=for-the-badge" alt="En desarrollo">
 </p>
 
 ---
 
-## 📖 Descripción
+## Acerca del proyecto
 
-**ShieldPHP** es una librería modular de seguridad desarrollada en PHP que proporciona herramientas para implementar autenticación, autorización, gestión de sesiones, cifrado, manejo de tokens y autenticación mediante proveedores OAuth 2.0.
+**ShieldPHP** es una biblioteca modular de seguridad para PHP cuyo objetivo es proporcionar herramientas para gestionar la autenticación, autorización, sesiones, tokens, cifrado y autenticación mediante proveedores externos.
 
-Su objetivo es facilitar la implementación de mecanismos de seguridad reutilizables, manteniendo una arquitectura desacoplada, extensible y compatible con los estándares modernos de desarrollo PHP.
+El proyecto está diseñado para que los desarrolladores puedan incorporar componentes de seguridad en sus aplicaciones sin tener que implementar desde cero cada mecanismo.
 
-ShieldPHP está diseñada para integrarse en diferentes tipos de aplicaciones:
+ShieldPHP busca ofrecer:
 
-- Aplicaciones web desarrolladas en PHP.
-- APIs REST.
-- Sistemas empresariales.
-- Aplicaciones con frontend Vue.js.
-- Sistemas que utilizan autenticación mediante JWT.
-- Aplicaciones que requieren inicio de sesión social.
+- Arquitectura modular y extensible.
+- Separación de responsabilidades.
+- Autenticación y autorización centralizadas.
+- Protección mediante mecanismos criptográficos modernos.
+- Integración con servicios OAuth 2.0.
+- Componentes reutilizables mediante Composer.
+- Pruebas unitarias, de integración y seguridad.
 
-## 🎯 Objetivos del proyecto
+Actualmente se encuentra en desarrollo, con una base inicial del paquete Core y diferentes integraciones en construcción.
 
-- Proporcionar un sistema centralizado de autenticación.
-- Implementar mecanismos seguros de almacenamiento de contraseñas.
-- Gestionar usuarios, roles y permisos.
-- Facilitar la autenticación mediante JWT.
-- Incorporar mecanismos de cifrado y firmas digitales.
-- Implementar autenticación OAuth 2.0 con protección PKCE.
-- Administrar sesiones y cookies de forma segura.
-- Ofrecer middleware reutilizable para aplicaciones HTTP.
-- Facilitar la validación de entradas y direcciones de redirección.
-- Proporcionar pruebas unitarias, de integración y de seguridad.
+## Características principales
 
-## ✨ Características principales
+### 1. Autenticación
 
-### 🔐 Authentication
+Componentes para administrar la identidad de los usuarios y verificar sus credenciales.
 
-Sistema de autenticación de usuarios.
-
-- Inicio de sesión mediante correo y contraseña.
+- Autenticación mediante correo electrónico y contraseña.
 - Verificación segura de contraseñas.
-- Hashing utilizando las funciones nativas de PHP.
-- Políticas configurables de contraseñas.
-- Identidad de usuario.
-- Validación de cuentas activas.
-- Resultados de autenticación uniformes.
+- Políticas de seguridad para contraseñas.
+- Administración de identidades.
+- Resultados estructurados de autenticación.
+- Protección frente a intentos de enumeración de usuarios.
 
-### 🔑 JWT Authentication
+### 2. Autorización
 
-Gestión de JSON Web Tokens.
-
-- Generación de JWT.
-- Validación de firmas.
-- Claims personalizados.
-- Configuración de issuer y audience.
-- Control de expiración.
-- Validación de not-before.
-- Identificadores únicos de tokens (`jti`).
-- Lista de revocación de tokens.
-- Access tokens y refresh tokens.
-
-Algoritmos contemplados en la configuración:
-
-- HS256
-- HS384
-- HS512
-
-### 🌐 OAuth 2.0
-
-Autenticación mediante proveedores externos.
-
-Proveedores implementados:
-
-- Google OAuth 2.0.
-- Facebook OAuth 2.0.
-
-Características:
-
-- Construcción de URLs de autorización.
-- Validación del parámetro `state`.
-- Protección contra ataques de repetición.
-- PKCE con SHA-256.
-- Intercambio de códigos de autorización.
-- Obtención y normalización de perfiles.
-- Validación de URI de redirección.
-
-### 🔒 Cryptography
-
-Herramientas criptográficas.
-
-- Cifrado autenticado mediante libsodium.
-- Derivación de claves mediante Argon2id.
-- Administración de claves.
-- Generación de números aleatorios criptográficamente seguros.
-- Generación de UUID.
-- Firmas digitales Ed25519.
-
-### 👤 Authorization
-
-Control de acceso basado en roles y permisos.
+Sistema de control de acceso para administrar los privilegios de los usuarios.
 
 - Administración de roles.
 - Administración de permisos.
-- Asignación de permisos.
-- Revocación de permisos.
-- Verificación de roles.
+- Asignación de roles.
 - Verificación de permisos.
-- Control de acceso basado en usuarios.
+- Control de acceso a recursos.
+- Separación entre autenticación y autorización.
 
-### 🍪 Session Management
+### 3. JWT
 
-Administración de sesiones.
+Administración de tokens JSON Web Token.
 
-- Creación de sesiones.
+- Generación de tokens.
+- Validación de firmas.
+- Administración de declaraciones JWT.
+- Tokens de acceso.
+- Tokens de actualización.
+- Configuración de expiración.
+- Revocación de tokens.
+- Lista negra de tokens.
+
+### 4. OAuth 2.0
+
+Base para integrar autenticación mediante proveedores externos.
+
+- Flujo de autorización OAuth 2.0.
+- Gestión del parámetro `state`.
+- Protección mediante PKCE.
+- Intercambio de códigos de autorización.
+- Obtención de perfiles de usuario.
+- Cliente HTTP con restricciones HTTPS y de dominios permitidos.
+
+**Proveedores contemplados:**
+
+- Google
+- Facebook
+
+### 5. Criptografía
+
+Herramientas para proteger información sensible.
+
+- Cifrado y descifrado de datos.
+- Derivación de claves.
+- Administración de claves criptográficas.
+- Generación de valores aleatorios seguros.
+- Firmas digitales.
+- Validación de firmas.
+
+Las operaciones criptográficas del Core utilizan libsodium.
+
+### 6. Sesiones y cookies
+
+Componentes para administrar sesiones de usuario.
+
+- Administración de sesiones.
 - Regeneración de identificadores.
 - Destrucción de sesiones.
-- Tiempo de expiración.
-- Tiempo de inactividad.
-- Duración máxima de sesión.
-- Administración segura de cookies.
-- Configuración de atributos HttpOnly, Secure y SameSite.
+- Administración de cookies.
+- Configuración de atributos de seguridad.
+- Opciones de protección contra ataques relacionados con sesiones.
 
-### 🛡️ Middleware
+### 7. Validación
 
-Middleware compatible con PSR-15.
-
-- Autenticación mediante JWT.
-- Protección CSRF.
-- Control de permisos.
-- Control de roles.
-- Limitación de solicitudes (Rate Limiting).
-- Cabeceras HTTP de seguridad.
-
-### ✅ Validation
-
-Validación de datos de entrada.
+Herramientas para validar entradas y configuraciones.
 
 - Validación de correos electrónicos.
 - Validación de cadenas.
 - Validación de números.
-- Validación de booleanos.
-- Validación de URLs.
-- Validación de opciones permitidas.
+- Validación de URL.
 - Validación de URI de redirección.
+- Validación de configuraciones.
 
-## 🏗️ Arquitectura del proyecto
+---
 
-ShieldPHP utiliza una arquitectura modular basada en separación de responsabilidades y contratos mediante interfaces.
+## Arquitectura
+
+ShieldPHP utiliza una arquitectura modular basada en paquetes independientes.
 
 ```text
-ShieldPHP/
+shieldphp/
 │
 ├── packages/
-│   │
-│   ├── php-core/
-│   │   │
-│   │   ├── src/
-│   │   │   ├── Auth/
-│   │   │   ├── Authorization/
-│   │   │   ├── Config/
-│   │   │   ├── Contracts/
-│   │   │   ├── Crypto/
-│   │   │   ├── Exceptions/
-│   │   │   ├── JWT/
-│   │   │   ├── Middleware/
-│   │   │   ├── OAuth/
-│   │   │   │   └── Providers/
-│   │   │   ├── Session/
-│   │   │   ├── Validation/
-│   │   │   │
-│   │   │   ├── Shield.php
-│   │   │   └── QuickAuth.php
-│   │   │
-│   │   ├── tests/
-│   │   │   ├── Unit/
-│   │   │   ├── Integration/
-│   │   │   ├── Security/
-│   │   │   └── bootstrap.php
-│   │   │
-│   │   ├── composer.json
-│   │   └── phpunit.xml
-│   │
-│   └── vue/
+│   └── php-core/
+│       ├── src/
+│       │   ├── Auth/
+│       │   ├── Authorization/
+│       │   ├── Config/
+│       │   ├── Contracts/
+│       │   ├── Crypto/
+│       │   ├── Exceptions/
+│       │   ├── JWT/
+│       │   ├── Middleware/
+│       │   ├── OAuth/
+│       │   │   └── Providers/
+│       │   ├── Session/
+│       │   └── Validation/
+│       │
+│       ├── tests/
+│       │   ├── Unit/
+│       │   │   ├── Auth/
+│       │   │   ├── Authorization/
+│       │   │   ├── Config/
+│       │   │   ├── Crypto/
+│       │   │   ├── Exceptions/
+│       │   │   ├── JWT/
+│       │   │   ├── OAuth/
+│       │   │   ├── Session/
+│       │   │   ├── Support/
+│       │   │   └── Validation/
+│       │   │
+│       │   ├── Integration/
+│       │   └── Security/
+│       │
+│       ├── composer.json
+│       ├── phpstan.neon
+│       └── phpunit.xml
 │
 ├── integrations/
+│   └── laravel/
+│       ├── config/
+│       ├── src/
+│       └── README.md
 │
 ├── examples/
+│   ├── php-basic/
+│   ├── oauth-google/
+│   └── oauth-facebook/
 │
 ├── docs/
 │
-├── config/
-│
-├── README.md
-├── LICENSE
-└── .gitignore
+├── .editorconfig
+├── .env.example
+├── .gitattributes
+├── .gitignore
+├── CHANGELOG.md
+├── composer.json
+└── phpunit.xml
 ```
 
-### Organización de los módulos
+*La estructura representa la organización prevista y actual del monorepositorio; algunos adaptadores y módulos todavía están en desarrollo.*
 
-| Directorio | Responsabilidad |
+## Tecnologías utilizadas
+
+| Tecnología | Aplicación |
 |---|---|
-| `Auth/` | Autenticación y gestión de usuarios. |
-| `Authorization/` | Roles, permisos y control de acceso. |
-| `Config/` | Configuración y validación de opciones. |
-| `Contracts/` | Interfaces y contratos. |
-| `Crypto/` | Cifrado, firmas y administración de claves. |
-| `Exceptions/` | Excepciones del sistema. |
-| `JWT/` | Tokens de acceso y revocación. |
-| `Middleware/` | Protección de solicitudes HTTP. |
-| `OAuth/` | Integración con proveedores externos. |
-| `Session/` | Administración de sesiones y cookies. |
-| `Validation/` | Validación de datos. |
-
-## ⚙️ Requisitos
-
-| Tecnología | Requisito |
-|---|---|
-| PHP | 8.2 o superior |
-| Composer | Administrador de dependencias |
-| PHPUnit | Pruebas automatizadas |
+| PHP 8.2+ | Lenguaje principal |
+| Composer | Administración de dependencias |
+| PHPUnit 11.5 | Pruebas automatizadas |
+| PHPStan | Análisis estático |
+| PHP-CS-Fixer | Formato del código |
 | libsodium | Operaciones criptográficas |
-| Firebase JWT | Manejo de JWT |
-| PSR | Interfaces HTTP estandarizadas |
+| Firebase PHP-JWT | Administración de JWT |
+| PSR-7 | Mensajes HTTP |
+| PSR-17 | Fábricas HTTP |
+| PSR-18 | Cliente HTTP |
 
-Dependencias principales utilizadas:
+## Requisitos
 
-- `firebase/php-jwt`
-- `psr/http-client`
-- `psr/http-factory`
-- `psr/http-message`
-- `psr/http-server-middleware`
-- `psr/http-server-handler`
-- `guzzlehttp/guzzle`
-- `guzzlehttp/psr7`
+Antes de instalar ShieldPHP necesitas:
 
-## 🚀 Instalación
+- PHP 8.2 o superior.
+- Composer 2.
+- Extensión PHP `sodium`.
+- Extensión PHP `json`.
+- Extensiones y dependencias adicionales según los módulos que utilices.
 
-Clona el repositorio:
+Puedes comprobar tu instalación con:
+
+```bash
+php -v
+composer --version
+php -m
+```
+
+Verifica que `sodium` y `json` aparezcan entre las extensiones habilitadas.
+
+---
+
+## Instalación
+
+### Opción 1. Instalar el monorepositorio
+
+Clona el repositorio y accede a su directorio raíz:
 
 ```bash
 git clone https://github.com/isairey/shieldphp.git
-```
-
-Entra al núcleo PHP:
-
-```bash
-cd ShieldPHP/packages/php-core
+cd shieldphp
 ```
 
 Instala las dependencias:
 
 ```bash
+composer validate
 composer install
+composer dump-autoload
 ```
 
-Comprueba la versión de PHP:
+Esta modalidad permite trabajar con los paquetes y ejemplos desde un mismo entorno.
+
+### Opción 2. Instalar ShieldPHP Core
+
+También puedes trabajar directamente desde el paquete independiente:
 
 ```bash
-php -v
+cd packages/php-core
 ```
 
-Verifica las dependencias:
+Instala las dependencias:
 
 ```bash
 composer validate
+composer install
+composer dump-autoload
 ```
 
-> Sustituye `<REPOSITORY_URL>` por la dirección real del repositorio.
+El paquete Core utiliza su propio autoloading PSR-4:
 
-## 💻 Uso básico
+```json
+{
+    "autoload": {
+        "psr-4": {
+            "ShieldPHP\\Core\\": "src/"
+        }
+    }
+}
+```
 
-ShieldPHP dispone de una clase principal para centralizar la creación de sus componentes.
+> La publicación e instalación pública mediante Packagist dependerá de que el paquete se publique oficialmente.
 
-### Inicialización
+---
+
+## Uso básico
+
+ShieldPHP está organizado para que sus componentes puedan utilizarse de manera independiente.
+
+Por ejemplo, el componente de hash de contraseñas puede utilizarse de la siguiente manera:
 
 ```php
 <?php
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use ShieldPHP\Core\Shield;
+use ShieldPHP\Core\Auth\PasswordHasher;
 
-$shield = new Shield();
+$passwordHasher = new PasswordHasher();
 
-echo 'ShieldPHP version: ' . $shield->version();
-```
-
-### Hashing de contraseñas
-
-```php
-<?php
-
-require_once __DIR__ . '/vendor/autoload.php';
-
-use ShieldPHP\Core\Shield;
-
-$shield = new Shield();
-
-$passwordHasher = $shield->createPasswordHasher();
-
-$password = 'MySecurePassword123!';
+$password = 'MiPasswordSeguro2026!';
 
 // Generar hash
-$hash = $passwordHasher->hash($password);
+$passwordHash = $passwordHasher->hash($password);
 
 // Verificar contraseña
 $isValid = $passwordHasher->verify(
     $password,
-    $hash
+    $passwordHash
 );
 
 if ($isValid) {
-    echo 'Password verified successfully.';
-}
-```
-
-### Política de contraseñas
-
-```php
-<?php
-
-use ShieldPHP\Core\Auth\PasswordPolicy;
-
-$passwordPolicy = new PasswordPolicy(
-    12,
-    1024
-);
-
-$password = 'MySecurePassword123!';
-
-if ($passwordPolicy->isValid($password)) {
-    echo 'Valid password.';
+    echo 'Contraseña válida';
 } else {
-    echo 'Invalid password.';
+    echo 'Credenciales incorrectas';
 }
 ```
 
-### Gestión de roles y permisos
+Este ejemplo ilustra el uso previsto de la clase `PasswordHasher`. Para utilizarlo desde una aplicación consumidora, instala primero las dependencias del paquete y adapta la ruta del autoload según tu proyecto.
 
-```php
-<?php
+---
 
-use ShieldPHP\Core\Auth\UserIdentity;
-use ShieldPHP\Core\Authorization\Permission;
-use ShieldPHP\Core\Authorization\Role;
+## Configuración
 
-$permission = new Permission(
-    'users.read',
-    'Read users'
-);
+ShieldPHP cuenta con una plantilla de variables de entorno:
 
-$role = new Role(
-    'admin',
-    'Administrator'
-);
-
-$role->grantPermission($permission);
-
-if ($role->hasPermission('users.read')) {
-    echo 'Access granted.';
-}
+```text
+.env.example
 ```
 
-> Los ejemplos muestran el uso de componentes individuales. La integración completa de autenticación con base de datos requiere implementar `UserProviderInterface` y conectar los almacenes persistentes correspondientes.
+Esta contempla variables relacionadas con:
 
-## 🔧 Configuración
+- Nombre y entorno de la aplicación.
+- Configuración JWT.
+- Claves de cifrado.
+- Administración de sesiones.
+- Cookies.
+- Proveedores OAuth.
+- Protección CSRF.
+- Limitación de solicitudes.
+- Registro de eventos.
+- Configuración de base de datos.
 
-ShieldPHP permite configurar el comportamiento general de la librería.
+Copia la plantilla para preparar tu entorno:
 
-```php
-<?php
-
-use ShieldPHP\Core\Shield;
-
-$shield = new Shield([
-    'app_name' => 'My Application',
-    'access_token_ttl' => 900,
-    'refresh_token_ttl' => 604800,
-    'secure_cookies' => true,
-    'same_site' => 'Lax',
-]);
+```bash
+cp .env.example .env
 ```
 
-| Parámetro | Descripción |
+En Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+**Importante:** la plantilla documenta las variables previstas, pero no todas están conectadas automáticamente a los componentes del Core. Una aplicación debe cargar las variables y transformarlas en la configuración que corresponda. ShieldPHP no incluye actualmente un cargador universal de archivos `.env`.
+
+### Generación de claves
+
+Genera claves criptográficas independientes:
+
+```bash
+php -r "echo base64_encode(random_bytes(32)), PHP_EOL;"
+```
+
+Puedes utilizar una clave para JWT con HS256 y otra para el cifrado.
+
+Las claves almacenadas en Base64 deben decodificarse antes de entregarlas a los componentes que esperan claves binarias.
+
+Nunca publiques las claves reales en GitHub.
+
+---
+
+## Pruebas automatizadas
+
+ShieldPHP utiliza PHPUnit para organizar sus pruebas en tres categorías.
+
+| Suite | Objetivo |
 |---|---|
-| `app_name` | Nombre de la aplicación. |
-| `access_token_ttl` | Tiempo de vida del access token en segundos. |
-| `refresh_token_ttl` | Tiempo de vida del refresh token en segundos. |
-| `secure_cookies` | Configura el atributo Secure de las cookies. |
-| `same_site` | Política SameSite de las cookies. |
+| Unit | Validar el comportamiento individual de cada componente. |
+| Integration | Comprobar la interacción entre componentes. |
+| Security | Evaluar mecanismos y escenarios relacionados con la seguridad. |
 
-Los secretos, claves de cifrado y credenciales OAuth deben suministrarse mediante variables de entorno o mecanismos seguros de configuración. No deben incluirse directamente en el repositorio.
+### Ejecutar todas las pruebas
 
-## 🧪 Testing
-
-ShieldPHP utiliza PHPUnit para realizar pruebas automatizadas.
-
-Las pruebas se organizan en tres niveles:
-
-### Unit Tests
-
-Verifican el comportamiento individual de las clases.
-
-```bash
-vendor/bin/phpunit tests/Unit
-```
-
-### Integration Tests
-
-Verifican la interacción entre diferentes componentes.
-
-```bash
-vendor/bin/phpunit tests/Integration
-```
-
-### Security Tests
-
-Verifican el comportamiento de los mecanismos de seguridad frente a entradas maliciosas y situaciones adversas.
-
-```bash
-vendor/bin/phpunit tests/Security
-```
-
-### Suite completa
+Desde la raíz:
 
 ```bash
 composer test
 ```
 
-### Análisis estático
+### Ejecutar pruebas por categoría
+
+```bash
+vendor/bin/phpunit --testsuite "ShieldPHP - Unit Tests"
+
+vendor/bin/phpunit --testsuite "ShieldPHP - Integration Tests"
+
+vendor/bin/phpunit --testsuite "ShieldPHP - Security Tests"
+```
+
+Desde `packages/php-core`:
+
+```bash
+composer test
+```
+
+### Generar cobertura de código
+
+Requiere Xdebug o PCOV:
+
+```bash
+vendor/bin/phpunit --coverage-html var/coverage
+```
+
+---
+
+## Análisis estático
+
+ShieldPHP utiliza PHPStan para identificar errores potenciales y problemas relacionados con los tipos.
+
+La configuración se encuentra en:
+
+```text
+packages/php-core/phpstan.neon
+```
+
+Ejecuta el análisis desde el paquete Core:
 
 ```bash
 composer analyse
 ```
 
-## 🔐 Consideraciones de seguridad
+El nivel inicial de análisis configurado es 8.
 
-ShieldPHP busca incorporar buenas prácticas de seguridad desde su arquitectura.
+## Formato del código
 
-Entre sus mecanismos se encuentran:
+El proyecto utiliza PHP-CS-Fixer para mantener un estilo consistente.
 
-- Hashing de contraseñas con funciones nativas de PHP.
-- Cifrado autenticado con libsodium.
-- Derivación de claves mediante Argon2id.
-- Firmas JWT verificadas mediante algoritmos permitidos.
-- Validación de issuer, audience y expiración.
-- Protección OAuth mediante `state` y PKCE.
-- Validación estricta de URI de redirección.
-- Protección contra repetición de estados OAuth.
-- Cookies con atributos de seguridad.
-- Middleware de autenticación, CSRF y control de acceso.
+```bash
+composer format
+```
 
-**Estado de seguridad:** ShieldPHP se encuentra en desarrollo. Las implementaciones en memoria son auxiliares y no deben utilizarse como almacenamiento de producción. Antes de desplegar una aplicación, es necesario configurar almacenes persistentes y compartidos, revisar los flujos completos de autenticación, implementar la rotación de claves y someter el sistema a una auditoría de seguridad.
+Para comprobar el formato sin modificar los archivos:
 
-No se debe considerar que la existencia de pruebas automatizadas equivale a una auditoría o certificación de seguridad.
+```bash
+composer format:check
+```
 
-## 🗺️ Roadmap
+---
 
-| Funcionalidad | Estado |
+## Integración con Laravel
+
+ShieldPHP contempla una integración específica con Laravel.
+
+Directorio:
+
+```text
+integrations/laravel/
+```
+
+Esta integración cuenta con una estructura inicial para:
+
+- Registro de servicios.
+- Configuración del paquete.
+- Registro de alias de middleware.
+- Publicación de configuración.
+- Carga de rutas.
+
+La integración todavía requiere completar y validar sus adaptadores, middleware y mecanismos de autenticación antes de considerarse lista para producción.
+
+---
+
+## Seguridad
+
+La seguridad es uno de los principios fundamentales de ShieldPHP.
+
+Se contemplan las siguientes prácticas:
+
+- Utilizar algoritmos criptográficos estándar.
+- No almacenar contraseñas en texto plano.
+- Validar las firmas y expiraciones de los JWT.
+- Mantener protegidas las claves criptográficas.
+- Validar el parámetro `state` durante los procesos OAuth.
+- Utilizar PKCE cuando corresponda.
+- Restringir las conexiones HTTP OAuth a HTTPS y dominios permitidos.
+- Aplicar controles de acceso.
+- Proteger las sesiones y cookies.
+- Validar todas las entradas externas.
+
+### Recomendaciones para producción
+
+1. Desactivar el modo de depuración.
+2. Utilizar HTTPS en toda la aplicación.
+3. Configurar claves criptográficas seguras.
+4. No compartir secretos entre diferentes mecanismos.
+5. Configurar adecuadamente la expiración de tokens.
+6. Implementar almacenamiento persistente para revocación y estado OAuth.
+7. Verificar criptográficamente los ID tokens cuando se utilicen.
+8. Configurar límites de solicitudes.
+9. No confiar únicamente en las validaciones del frontend.
+10. Ejecutar las pruebas y auditorías de seguridad antes del despliegue.
+
+> ShieldPHP se encuentra en desarrollo. Su estructura y componentes iniciales no constituyen por sí solos una certificación de seguridad ni garantizan que todas las integraciones estén listas para producción.
+
+---
+
+## Estado del desarrollo
+
+| Componente | Estado |
 |---|---|
-| Core PHP | En desarrollo |
-| Autenticación | Implementado inicialmente |
-| Password Hashing | Implementado inicialmente |
-| JWT | Implementado inicialmente |
-| OAuth Google | Implementado inicialmente |
-| OAuth Facebook | Implementado inicialmente |
-| PKCE | Implementado inicialmente |
-| Sesiones | Implementado inicialmente |
-| Roles y permisos | Implementado inicialmente |
-| Middleware PSR-15 | Implementado inicialmente |
-| Validación | Implementado inicialmente |
-| Pruebas automatizadas | En desarrollo |
-| Vue SDK | En desarrollo |
-| Adaptadores de bases de datos | Pendiente |
-| Documentación completa | En desarrollo |
-| Auditoría de seguridad | Pendiente |
-| Release estable 1.0.0 | Pendiente |
+| Estructura del monorepositorio | Inicial |
+| Autenticación Core | Base implementada |
+| Autorización | Base implementada |
+| Configuración | Base implementada |
+| Criptografía | Base implementada |
+| JWT | Base implementada |
+| OAuth Google | Implementación inicial |
+| OAuth Facebook | Implementación inicial |
+| Sesiones y cookies | En desarrollo |
+| Validaciones | Implementación inicial |
+| PHPUnit | Suite inicial |
+| PHPStan | Configuración inicial |
+| Integración Laravel | En desarrollo |
+| Adaptadores persistentes | Pendientes |
+| Documentación | En desarrollo |
 
-## 🤝 Contribuciones
+## Hoja de ruta
+
+### Fase 1 — Núcleo de seguridad
+- [x] Crear la estructura del monorepositorio.
+- [x] Establecer el autoloading PSR-4.
+- [x] Incorporar componentes iniciales de autenticación.
+- [x] Incorporar herramientas criptográficas.
+- [x] Establecer la base de JWT y OAuth.
+- [ ] Completar y validar todas las API del Core.
+
+### Fase 2 — Pruebas y calidad
+- [x] Organizar las pruebas PHPUnit.
+- [x] Configurar PHPStan.
+- [ ] Completar las pruebas unitarias.
+- [ ] Completar las pruebas de integración.
+- [ ] Ampliar las pruebas de seguridad.
+- [ ] Integrar comprobaciones automatizadas mediante CI.
+
+### Fase 3 — Integraciones
+- [x] Crear la estructura de integración con Laravel.
+- [x] Preparar ejemplos OAuth.
+- [ ] Completar los adaptadores de Laravel.
+- [ ] Incorporar almacenamiento persistente.
+- [ ] Completar los ejemplos de uso.
+
+### Fase 4 — Distribución
+- [ ] Completar la documentación técnica.
+- [ ] Preparar la documentación de instalación.
+- [ ] Realizar auditorías de seguridad.
+- [ ] Publicar ShieldPHP Core en Packagist.
+- [ ] Preparar la primera versión estable.
+
+---
+
+## Contribuciones
 
 Las contribuciones son bienvenidas.
 
 Para colaborar:
 
-1. Haz un fork del repositorio.
-2. Crea una rama para tu funcionalidad.
-3. Implementa los cambios siguiendo la arquitectura existente.
-4. Añade las pruebas correspondientes.
-5. Ejecuta la suite de pruebas.
-6. Envía un Pull Request con una descripción de los cambios.
+1. Realiza un fork del repositorio.
+2. Crea una rama para tu funcionalidad o corrección.
+3. Implementa los cambios siguiendo la arquitectura del proyecto.
+4. Agrega o actualiza las pruebas correspondientes.
+5. Ejecuta las comprobaciones de calidad.
+6. Envía un Pull Request con una descripción clara de los cambios.
 
-Las contribuciones deben mantener la compatibilidad con PHP 8.2 o superior y respetar los estándares de código del proyecto.
+Ejemplo:
 
-## 📄 Licencia
+```bash
+git checkout -b feature/nueva-funcionalidad
 
-ShieldPHP se distribuye bajo la licencia MIT.
+git add .
 
-Consulta el archivo `LICENSE` para conocer los términos completos de uso y distribución.
+git commit -m "feat: agregar nueva funcionalidad"
 
-## 👨‍💻 Autor
+git push origin feature/nueva-funcionalidad
+```
 
-**Isai Reyes - ShieldPHP Development**
+### Convención de commits
 
-Proyecto independiente enfocado en el desarrollo de herramientas de autenticación, autorización y seguridad para el ecosistema PHP.
+ShieldPHP utiliza como referencia Conventional Commits:
+
+| Prefijo | Uso |
+|---|---|
+| `feat:` | Nueva funcionalidad. |
+| `fix:` | Corrección de errores. |
+| `docs:` | Cambios en documentación. |
+| `test:` | Incorporación o modificación de pruebas. |
+| `refactor:` | Mejoras internas del código. |
+| `security:` | Mejoras relacionadas con seguridad. |
+| `chore:` | Mantenimiento y configuración. |
+
+---
+
+## Licencia
+
+El archivo `composer.json` declara la licencia MIT.
+
+Antes de distribuir oficialmente ShieldPHP, incorpora el archivo `LICENSE` correspondiente y verifica que todos los paquetes y dependencias respeten sus respectivas licencias.
+
+## Autor
+
+**Isai Reyes Peña**
+
+Desarrollador de ShieldPHP.
+
+## Agradecimientos
+
+ShieldPHP se construye con el objetivo de proporcionar herramientas de seguridad reutilizables para el ecosistema PHP, apoyándose en estándares abiertos, buenas prácticas de desarrollo y tecnologías ampliamente utilizadas.
+
+---
 
 <p align="center">
-  **ShieldPHP**
+  <strong>ShieldPHP</strong>
   <br>
-  <i>Security. Simplicity. Control.</i>
+  Seguridad modular para aplicaciones PHP.
 </p>
