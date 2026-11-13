@@ -1,9 +1,8 @@
 
 import { computed, inject } from 'vue';
-
 import type { ComputedRef } from 'vue';
 
-import QuickAuthClient from '../client/QuickAuthClient';
+import type QuickAuthClient from '../client/QuickAuthClient';
 
 import type {
     AuthUser,
