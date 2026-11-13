@@ -25,18 +25,21 @@ import {
 /**
  * ShieldPHP dependency injection key.
  *
- * Must match the key used by app.provide('shieldphp', client).
+ * Register the client using:
+ *
+ * app.provide(SHIELDPHP_INJECTION_KEY, client);
  */
 export const SHIELDPHP_INJECTION_KEY = 'shieldphp';
 
 /**
- * Options for useAuth.
+ * useAuth configuration options.
  */
 export interface UseAuthOptions {
     /**
-     * Optional ShieldPHP client instance.
+     * Optional QuickAuthClient instance.
      *
-     * When omitted, the client is obtained through Vue injection.
+     * If omitted, the client is retrieved from
+     * Vue dependency injection.
      */
     client?: QuickAuthClient;
 }
@@ -61,7 +64,7 @@ export interface UseAuthReturn {
     loading: ComputedRef<boolean>;
 
     /**
-     * Indicates whether authentication has been initialized.
+     * Indicates whether authentication was initialized.
      */
     initialized: ComputedRef<boolean>;
 
@@ -71,12 +74,12 @@ export interface UseAuthReturn {
     isAuthenticated: ComputedRef<boolean>;
 
     /**
-     * Indicates whether the user is an unauthenticated guest.
+     * Indicates whether the current user is a guest.
      */
     isGuest: ComputedRef<boolean>;
 
     /**
-     * Current authentication error.
+     * Last authentication error.
      */
     error: ComputedRef<string | null>;
 
@@ -91,7 +94,7 @@ export interface UseAuthReturn {
     logout(): Promise<void>;
 
     /**
-     * Initialize or restore authentication.
+     * Initialize authentication.
      */
     initialize(): Promise<AuthUser | null>;
 
@@ -111,7 +114,7 @@ export interface UseAuthReturn {
     hasRole(role: string): boolean;
 
     /**
-     * Check whether the user has at least one specified role.
+     * Check whether the user has at least one role.
      */
     hasAnyRole(roles: string[]): boolean;
 
@@ -126,7 +129,7 @@ export interface UseAuthReturn {
     hasPermission(permission: string): boolean;
 
     /**
-     * Check whether the user has at least one specified permission.
+     * Check whether the user has at least one permission.
      */
     hasAnyPermission(permissions: string[]): boolean;
 
@@ -139,18 +142,22 @@ export interface UseAuthReturn {
 /**
  * useAuth
  *
- * Vue 3 composable for ShieldPHP authentication.
+ * Main Vue 3 composable for ShieldPHP authentication.
  *
  * Features:
- * - Reactive authenticated user.
- * - Authentication state.
+ * - Reactive authentication state.
+ * - User information.
  * - Login and logout.
- * - Session initialization.
+ * - Authentication initialization.
  * - User information refresh.
- * - Role checks.
- * - Permission checks.
+ * - Role management.
+ * - Permission management.
+ * - Guest state detection.
  *
- * Usage:
+ * The composable shares the AuthState instance
+ * managed by QuickAuthClient.
+ *
+ * @example
  *
  * const {
  *     user,
@@ -158,39 +165,62 @@ export interface UseAuthReturn {
  *     login,
  *     logout,
  * } = useAuth();
- *
- * The QuickAuthClient must be provided by the Vue application
- * or passed explicitly through the options.
  */
 export function useAuth(
     options: UseAuthOptions = {}
 ): UseAuthReturn {
-    const client =
+
+    /**
+     * Resolve the QuickAuthClient instance.
+     *
+     * Priority:
+     * 1. Explicitly provided client.
+     * 2. Vue dependency injection.
+     */
+    const resolvedClient: QuickAuthClient | undefined =
         options.client ??
-        inject<QuickAuthClient | null>(
-            SHIELDPHP_INJECTION_KEY,
-            null
+        inject<QuickAuthClient>(
+            SHIELDPHP_INJECTION_KEY
         );
 
-    if (!client) {
+    /**
+     * Ensure that a valid client exists.
+     */
+    if (!resolvedClient) {
         throw new Error(
             '[ShieldPHP] QuickAuthClient not found. ' +
-            'Register it with app.provide("shieldphp", client) ' +
-            'or pass it to useAuth({ client }).'
+            'Register the client using ' +
+            'app.provide(SHIELDPHP_INJECTION_KEY, client) ' +
+            'or provide it explicitly using useAuth({ client }).'
         );
     }
 
-    // Access the shared reactive authentication state.
+    /**
+     * Explicitly typed client instance.
+     *
+     * This prevents TypeScript from treating client
+     * as an optional or unknown value.
+     */
+    const client: QuickAuthClient = resolvedClient;
+
+    /**
+     * Obtain the shared authentication state.
+     */
     const authState = client.getAuthState();
 
     /**
-     * Indicates whether the current user is a guest.
+     * Reactive guest state.
      */
-    const isGuest = computed(
-        () =>
+    const isGuest = computed<boolean>(() => {
+        return (
             authState.initialized.value &&
             !authState.isAuthenticated.value
-    );
+        );
+    });
+
+    // ==========================================
+    // AUTHENTICATION OPERATIONS
+    // ==========================================
 
     /**
      * Authenticate a user.
@@ -198,32 +228,32 @@ export function useAuth(
     async function login(
         credentials: LoginCredentials
     ): Promise<AuthUser> {
-        return client.login(credentials);
+        return await client.login(credentials);
     }
 
     /**
      * End the current authentication session.
      */
     async function logout(): Promise<void> {
-        return client.logout();
+        await client.logout();
     }
 
     /**
-     * Initialize authentication.
+     * Initialize or restore authentication.
      */
     async function initialize(): Promise<AuthUser | null> {
-        return client.initialize();
+        return await client.initialize();
     }
 
     /**
-     * Refresh the current authenticated user.
+     * Refresh authenticated user information.
      */
     async function refresh(): Promise<AuthUser> {
-        return client.refreshUser();
+        return await client.refreshUser();
     }
 
     /**
-     * Clear local authentication information.
+     * Clear local authentication state.
      *
      * This does not revoke credentials on the backend.
      */
@@ -231,63 +261,97 @@ export function useAuth(
         client.clear();
     }
 
+    // ==========================================
+    // ROLE MANAGEMENT
+    // ==========================================
+
     /**
-     * Check a user role.
+     * Check whether the current user has a role.
      */
     function hasRole(role: string): boolean {
         return authState.hasRole(role);
     }
 
     /**
-     * Check whether the user has at least one role.
+     * Check whether the current user has
+     * at least one of the specified roles.
      */
     function hasAnyRole(roles: string[]): boolean {
         return authState.hasAnyRole(roles);
     }
 
     /**
-     * Check whether the user has every specified role.
+     * Check whether the current user has
+     * all specified roles.
      */
     function hasAllRoles(roles: string[]): boolean {
         return authState.hasAllRoles(roles);
     }
 
+    // ==========================================
+    // PERMISSION MANAGEMENT
+    // ==========================================
+
     /**
-     * Check a user permission.
+     * Check whether the current user has
+     * a specific permission.
      */
-    function hasPermission(permission: string): boolean {
+    function hasPermission(
+        permission: string
+    ): boolean {
         const currentUser = authState.user.value;
 
-        return currentUser
-            ? userHasPermission(currentUser, permission)
-            : false;
+        if (!currentUser) {
+            return false;
+        }
+
+        return userHasPermission(
+            currentUser,
+            permission
+        );
     }
 
     /**
-     * Check whether the user has at least one permission.
+     * Check whether the user has at least
+     * one of the specified permissions.
      */
     function hasAnyPermission(
         permissions: string[]
     ): boolean {
         const currentUser = authState.user.value;
 
-        return currentUser
-            ? userHasAnyPermission(currentUser, permissions)
-            : false;
+        if (!currentUser) {
+            return false;
+        }
+
+        return userHasAnyPermission(
+            currentUser,
+            permissions
+        );
     }
 
     /**
-     * Check whether the user has every specified permission.
+     * Check whether the user has all
+     * specified permissions.
      */
     function hasAllPermissions(
         permissions: string[]
     ): boolean {
         const currentUser = authState.user.value;
 
-        return currentUser
-            ? userHasAllPermissions(currentUser, permissions)
-            : false;
+        if (!currentUser) {
+            return false;
+        }
+
+        return userHasAllPermissions(
+            currentUser,
+            permissions
+        );
     }
+
+    // ==========================================
+    // RETURN COMPOSABLE API
+    // ==========================================
 
     return {
         // Reactive state
