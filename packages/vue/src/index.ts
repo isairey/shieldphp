@@ -81,6 +81,9 @@ export {
 // AUTH COMPOSABLE
 // ==============================================
 
+
+
+
 export {
     useAuth,
     SHIELDPHP_INJECTION_KEY,
@@ -107,7 +110,7 @@ export {
 // ==============================================
 
 export {
-    default as createQuickAuthPlugin,
+    createQuickAuthPlugin,
     quickAuthPlugin,
 } from './plugins/quickAuthPlugin';
 
