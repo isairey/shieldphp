@@ -7,7 +7,7 @@ import {
 import LoginView from '../views/auth/LoginView.vue';
 import DashboardView from '../views/DashboardView.vue';
 import ForbiddenView from '../views/ForbiddenView.vue';
-
+ 
 /**
  * Application routes.
  */
