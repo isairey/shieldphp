@@ -1,21 +1,19 @@
 
 import { createApp } from 'vue';
-import { createPinia } from 'pinia';
 
 import App from './App.vue';
 import router from './router';
 import { shield } from './shield';
 
-import { createQuickAuthPlugin } from 'shieldphp-vue';
+import {
+    createQuickAuthPlugin,
+} from 'shieldphp-vue';
 
 /**
  * Bootstrap ShieldPHP Vue application.
  */
 async function bootstrap(): Promise<void> {
     const app = createApp(App);
-
-    // Register Pinia.
-    app.use(createPinia());
 
     // Register ShieldPHP plugin.
     app.use(
@@ -35,13 +33,13 @@ async function bootstrap(): Promise<void> {
         })
     );
 
-    // Restore authentication before mounting.
+    // Restore authentication.
     await shield.initialize();
 
     // Register router.
     app.use(router);
 
-    // Wait for the initial navigation.
+    // Wait for initial navigation.
     await router.isReady();
 
     // Mount application.
